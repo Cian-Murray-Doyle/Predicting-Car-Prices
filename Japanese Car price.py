@@ -5,7 +5,6 @@ Created on Mon Nov  6 22:50:35 2023
 @author: cian3
 """
 
-from urllib.request import urlretrieve
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -16,10 +15,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
-
-url = "https://ac-101708228-virtuoso-prod.s3.amazonaws.com/uploads/download/120/us_car_prices.csv"
-urlretrieve(url,"us_car_prices.csv")
-us_car_prices = pd.read_csv("us_car_prices.csv",index_col=0)
+us_car_prices = pd.read_csv("dataset/us_car_prices.csv",index_col=0)
 us_car_prices.head()
 
 response = us_car_prices[["price"]]
