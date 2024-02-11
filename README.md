@@ -103,12 +103,12 @@ predictors_train, predictors_test, response_train, response_test = train_test_sp
 
 ### Decision Trees
 
-![](images/dec_tree_score.png)
+![](images/dec_tree_score.PNG)
 
 ### K Nearest Neighbours
 
-![](images/knn_score.png)
+![](images/knn_score.PNG)
 
 ### Support Vector Regression
 
-![](images/svr_score.png)
+![](images/svr_score.PNG)
