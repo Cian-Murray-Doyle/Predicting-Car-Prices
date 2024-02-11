@@ -55,6 +55,7 @@ print(residuals.mean())
 print(residuals.std())
 
 plt.hist(residuals,bins=100)
+plt.title("Distribution of Residuals")
 plt.show()
 
 plt.scatter(response_predictions,residuals)

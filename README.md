@@ -40,6 +40,75 @@ response = us_car_prices[["price"]]
 predictors = us_car_prices.drop(["price"],axis=1)
 ```
 
-Next we will look at removing features that are measuring the same or similar metrics, for example we can drop `"carwidth"` and `"carheight"` and keep `"carlength"`.
+### Irrelevant Data
+
+Next we will look at removing features that are measuring the same or similar metrics, for example we can drop `"carwidth"` and `"carheight"` and keep `"carlength"`. We can also remove some features that we know will not impact the asking price of the vehicle.
 
 ![](images/data_vis.PNG)
+
+``` python
+numeric_columns = us_car_prices.iloc[:,10:]
+numeric_columns = numeric_columns.drop(
+    ["symboling","stroke","compressionratio","peakrpm",
+     "horsepower","carlength","carheight","citympg"],axis=1)
+```
+
+With these removed we can check which of the remaining features, if any, have a high correlation with one another. Using a correlation matrix and plotting it with a heatmap we can see that all of the remaining features are okay to keep. We can drop the features we found to be irrelevant from our `"predictors"`variable at this point.
+
+![](images/corr_map.png)
+
+``` python
+predictors = predictors.drop(["symboling","stroke","compressionratio",
+                              "peakrpm","horsepower","carlength",
+                              "carwidth","carheight","citympg"],axis=1)
+```
+
+### Categorical Data
+
+Our linear regression models cannot deal with non numeric data, to work around this we will convert any categorical data to numeric. In our case we will use the one-hot encoding method, this will convert each categorical column into two binary columns, one true one false.
+
+``` python
+predictors = pd.get_dummies(predictors,drop_first=True)
+```
+
+![](images/one_hot_tbl.PNG)
+
+## Creating the Models
+
+### Linear Regression
+
+Having prepared the data we can apply begin to create models. The first model we will create is a linear regression model. After we fit the model to our data we will measure the accuracy using R Squared and adjusted R Squared.
+
+![](images/lin_scores.png)
+
+As we can see above the model is highly accurate, now we have to check if the model fits the assumptions of linear regression:
+
+-   The data is normally distributed.
+-   The data is evenly distributed.
+
+![](images/resid_dist.png) ![](images/hmsce_plot.png)
+
+As per the above plots we can see that the data is normally distrubted, however, the model was far more likely to provide inaccurate predictions for cheaper cars than for expensive ones. So this model must be rejected.
+
+## Non-Parametric Models
+
+These models will be less accurate than linear regression but they can violate assumptions and still be acceptable to use. We will use three different models to see which proves to be the most accurate.
+
+To begin using these types of models we will need to split our data into training and testing sets, this will help us test the accuracy of our models predictions.
+
+``` python
+predictors_train, predictors_test, response_train, response_test = train_test_split(
+    predictors, response, test_size=0.2, random_state=42)
+```
+
+### Decision Trees
+
+![](images/dec_tree_score.png)
+
+### K Nearest Neighbours
+
+![](images/knn_score.png)
+
+### Support Vector Regression
+
+![](images/svr_score.png)
