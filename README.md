@@ -88,7 +88,7 @@ As we can see above the model is highly accurate, now we have to check if the mo
 
 ![](images/resid_dist.png) ![](images/hmsce_plot.png)
 
-As per the above plots we can see that the data is normally distrubted, however, the model was far more likely to provide inaccurate predictions for cheaper cars than for expensive ones. So this model must be rejected.
+As per the above plots we can see that the data is normally distributed, however, the model was far more likely to provide inaccurate predictions for cheaper cars than for expensive ones. So this model must be rejected.
 
 ## Non-Parametric Models
 
@@ -112,3 +112,5 @@ predictors_train, predictors_test, response_train, response_test = train_test_sp
 ### Support Vector Regression
 
 ![](images/svr_score.PNG)
+
+We can see from the above scores that the KNN model provides us with the most accurate predictions of car prices. For this reason we will propose that the firm implement our K Nearest Neighbours algorithm to most accurately predict car prices for the American market.
