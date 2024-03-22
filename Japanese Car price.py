@@ -5,6 +5,7 @@ Created on Mon Nov  6 22:50:35 2023
 @author: cian3
 """
 
+#Importing Libraries
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -15,12 +16,18 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
+
+#Importing Data
 us_car_prices = pd.read_csv("us_car_prices.csv",index_col=0)
 us_car_prices.head()
 
+
+#Splitting Data so we can predict price
 response = us_car_prices[["price"]]
 predictors = us_car_prices.drop(["price"],axis=1)
 
+
+#Gathering numeric columns to see which features are too highly correlated
 numeric_columns = us_car_prices.iloc[:,10:]
 numeric_columns = numeric_columns.drop(
     ["symboling","stroke","compressionratio","peakrpm",
@@ -30,12 +37,16 @@ correlation_matrix = numeric_columns.corr()
 plt.figure(figsize=(10,10))
 sns.heatmap(correlation_matrix,vmin=-1.0,vmax=1.0,annot=True)
 
+#Dropping irrelevant data
 predictors = predictors.drop(["symboling","stroke","compressionratio",
                               "peakrpm","horsepower","carlength",
                               "carwidth","carheight","citympg"],axis=1)
 
+#Converting non-numeric data to numeric
 predictors = pd.get_dummies(predictors,drop_first=True)
 
+
+#Building a linear regression model
 linear_regression = skl.LinearRegression()
 linear_regression.fit(predictors,response)
 print(linear_regression.coef_)
@@ -49,6 +60,7 @@ k = predictors.shape[1]
 adjusted_r_squared = 1-((1-r_squared)*(n-1)/(n-k-1))
 print("Adjusted R_squared: ",adjusted_r_squared)
 
+#Our model is accurate but we need to check if the results are homoskedastic and normally distributed
 response_predictions = linear_regression.predict(predictors)
 residuals = response - response_predictions
 print(residuals.mean())
@@ -64,9 +76,13 @@ plt.xlabel("Response Predictions")
 plt.ylabel("Residuals")
 plt.show()
 
+
+#Are results are not homoskedastic
+#We need to try alternative models
 predictors_train, predictors_test, response_train, response_test = train_test_split(
     predictors, response, test_size=0.2, random_state=42)
 
+#Building and testing decision tree
 tree_regressor = DecisionTreeRegressor(random_state=0)
 tree_regressor.fit(predictors_train,response_train)
 tree_predictions = tree_regressor.predict(predictors_test)
@@ -78,6 +94,7 @@ print("Decision Tree Mean Absolute Error: ",tree_mae)
 print("Decision Tree Mean Squared Error:" ,tree_mse)
 print("Decision Tree R squared: ",tree_r_squared)
 
+#Building and testing k nearest neighbours
 knn_regressor = KNeighborsRegressor(n_neighbors=3)
 knn_regressor.fit(predictors_train,response_train)
 knn_predictions = knn_regressor.predict(predictors_test)
@@ -89,6 +106,7 @@ print("KNN Mean Absolute Error: ",knn_mae)
 print("KNN Mean Squared Error: ",knn_mse)
 print("KNN R squared: ",knn_r_squared)
 
+#Building and testing support vector regression
 svr_regression = SVR(kernel="rbf", C=100, gamma=0.1, epsilon=0.1)
 svr_regression.fit(predictors_train, response_train["price"])
 svr_predictions = svr_regression.predict(predictors_test)
